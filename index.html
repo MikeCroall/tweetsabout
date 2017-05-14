@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tweets About</title>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+		<style>
+		html{
+			font-family: Arial;
+		}
+		#tweet-count,#track-name-display,h5,p{
+			display: inline;
+		}
+		#tweet-count,#track-name-display{
+			font-weight: bold;
+			font-size: 1.1em;
+		}
+		html,body{
+			height: 100%;
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		input{
+			margin-left: 6px;
+		}
+		form{
+			margin-top: 10px;
+			text-align: center; 
+		}
+		</style>
+	</head>
+	<body>
+		<div id="content-wrap">
+			<p>
+				Since updating this page, there have been
+				<div id="tweet-count">0</div>
+				tweets regarding 
+				<div id="track-name-display">Trump</div>
+			</p>
+			<form id="frm">
+				<input type="text" id="track-name" value="Trump"></input>
+				<button type="button" onclick="sendNewTrackName();">Update</button>
+			</form>
+		</div>
+		<script>
+			var count = 0;
+			var socket = io();
+			socket.on('tweet', function(){
+				count += 1;
+				$('#tweet-count').html('&nbsp;' + count + '&nbsp;');
+			});
+
+			socket.on('track-name-change', function(newName){
+				console.log("Track name changed to", newName, "by someone else");
+				count = 0;
+				$('#tweet-count').html(count);
+				$('#track-name-display').html(newName);
+				$('#track-name').val(newName);
+			});
+
+			function sendNewTrackName() {
+				socket.emit('track-name-change', $('#track-name').val());
+				count = 0;
+				$('#tweet-count').html(count);
+				$('#track-name-display').html($('#track-name').val());
+			}
+		</script>
+	</body>
+</html>
