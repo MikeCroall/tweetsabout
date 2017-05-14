@@ -1,3 +1,5 @@
+// In case it wasn't obvious, these are Twitter API keys 
+
 // consumer_key
 k1 = "";
 
